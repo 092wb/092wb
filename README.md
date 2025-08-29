@@ -24,7 +24,7 @@
 |1-10选重|数字|数字选重|✔|✔|✔|✔|✔|
 |切换方案|Ctrl + Shift + `||✔|✔|✔|✔|✔|
 
-[更多说明](https://github.com/mlzzz/092wb/wiki)  
+[更多说明](https://github.com/092wb/092wb/wiki)  
 
 ## 内置方案
 + **092五笔**：主体方案
@@ -50,33 +50,33 @@ cd plum
 ibus-rime
 安装或更新所有文件
 ```shell
-bash rime-install mlzzz/092wb:recipes/full
+bash rime-install 092wb/092wb:recipes/full
 ```
 
 安装或更新所有词库文件
 ```shell
-bash rime-install mlzzz/092wb:recipes/all_dicts
+bash rime-install 092wb/092wb:recipes/all_dicts
 ```
 
 安装或更新opencc
 ```shell
-bash rime-install mlzzz/092wb:recipes/opencc
+bash rime-install 092wb/092wb:recipes/opencc
 ```
 
 安装或更新拆分
 ```shell
-bash rime-install mlzzz/092wb:recipes/spelling
+bash rime-install 092wb/092wb:recipes/spelling
 ```
 
 第三方Rime前端，需在plum之用法前加上rime_frontend或rime_dir参数。
 安装或更新所有文件
 ```shell
-rime_frontend=fcitx-rime bash rime-install mlzzz/092wb:recipes/full
+rime_frontend=fcitx-rime bash rime-install 092wb/092wb:recipes/full
 ```
 
 或
 ```shell
-rime_dir="$HOME/.config/fcitx/rime" bash rime-install mlzzz/092wb:recipes/full
+rime_dir="$HOME/.config/fcitx/rime" bash rime-install 092wb/092wb:recipes/full
 ```
 ### Windows
-「输入法设定」-> 「获取更多输入方案」-> 「mlzzz/092wb」-> 布署
+「输入法设定」-> 「获取更多输入方案」-> 「092wb/092wb」-> 布署
