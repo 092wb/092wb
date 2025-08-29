@@ -1,0 +1,160 @@
+# Rime schema settings
+# encoding: utf-8
+schema:
+  schema_id: 092wb
+  name: "092五笔"
+  version: "2024.04.07"
+  author:
+    - 发明人 行走的风景
+  description: |
+    092五笔
+  dependencies:   # 依赖
+    - 092wb_core        # 引入自定义过滤
+    - 092wb_py          # 反查
+    - 092wb_wb_spelling # 引入拆分
+
+
+# reset: 默认状态。注释掉后，切换窗口时不会重置到默认状态。
+switches:
+  - name: ascii_mode
+    reset: 0
+    states: [ 中, Ａ ]
+  - name: zh_trad
+    reset: 0
+    states: [ 简,繁 ]
+  - name: new_spelling
+    reset: 1
+    states: [ 隐,拆 ]  
+  - name: extended_char     # core过滤开关
+    reset: 0                          
+    states: [ 扩, 常] 
+  - name: new_hide_pinyin   # 显示读音
+    reset: 1
+    states: [ 音, 隐 ]
+  - name: ascii_punct
+    reset: 0
+    states: [ 。，, ．， ]
+  - name: full_shape        #默认是半角模式
+    reset: 0
+    states: [ 半, 全 ]
+  - name: emoji           # emoji
+    reset: 0
+    states: [ 😔, 😀 ] 
+engine:
+  filters:
+    - lua_filter@*092wb_core_filter                          # 加入此过滤，必须放到滤镜最上面
+    - simplifier@emoji                         # Emoji
+    - lua_filter@*092wb_new_spelling         # 拆分滤镜
+    - simplifier@traditionalize                # 简繁切换
+    - uniquifier
+  processors:
+    - ascii_composer
+    - recognizer
+    - key_binder
+    - speller
+    - punctuator
+    - selector
+    - navigator
+    - express_editor
+  segmentors:
+    - ascii_segmentor
+    - matcher
+    - abc_segmentor
+    - punct_segmentor
+    - fallback_segmentor
+  translators:
+    - punct_translator
+    - reverse_lookup_translator             # 反查
+    - table_translator
+    - history_translator@repeat_last_input  # 上屏最后一次输入
+    - lua_translator@*092wb_helper                 # 帮助
+    - lua_translator@*092wb_date_translator        # 时间、日期、星期
+    - lua_translator@*092wb_lunar                  # 农历
+    - lua_translator@*092wb_unicode                # Unicode
+    - lua_translator@*092wb_number_translator      # 数字、金额大写
+    - lua_translator@*092wb_force_gc               # 暴力 GC
+speller:
+  auto_select: true               # 自动上屏
+  auto_clear: max_length          # 最大码长清屏
+  delimiter: "`"                  # 上屏时的音节间分音符
+  max_code_length: 4              # 最大码长
+
+# 主翻译器
+translator:
+  dictionary: 092wb               # 翻译器将调取此字典文件
+  db_class: tabledb               # 设定用户词典类型，可设tabledb〔文本〕或userdb〔二进制〕
+  initial_quality: 100000         # 翻译器优先级
+  enable_charset_filter: false    # 自带字符集过滤 - 关
+  enable_sentence: false          # 句子输入模式 - 关
+  enable_encoder: false           # 编码提示 - 关
+  encode_commit_history: false    # 自动造词 - 关
+  max_phrase_length: 4            # 最大自动成词词长〔仅table_translator有效〕
+  enable_completion: false        # 提前显示尚未輸入完整码的字〔仅table_translator有效〕
+  enable_user_dict: false         # 是否开启用户词典（用户词典记录动态字词频，用户词）- 关
+  disable_user_dict_for_patterns: # 禁止某些编码录入用户词典
+    - "^z.*$"
+
+reverse_lookup:
+  dictionary: 092wb_py           # 反查使用的拼音词库
+  prefix: "z"              # 反查前缀，以它为起点
+  suffix: "'"              # 反查后缀，以它为结点
+  tips: [反查]              # 反查时的提示信息
+  preedit_format:
+    - xform/([nl])v/$1ü/
+    - xform/([nl])ue/$1üe/
+    - xform/([jqxy])v/$1u/
+
+#  OpenCC 支持。
+#  github地址：https://github.com/BYVoid/OpenCC
+traditionalize:
+  opencc_config: 092wb_s2t.json      # 简 -> 繁
+  option_name: zh_trad         # 繁简开关
+  #  opencc_config: s2hk.json   # 繁 -> 香港
+  #  opencc_config: t2s.json   # 繁 -> 简
+  #  opencc_config: t2tw.json  # 繁 -> 台湾
+  #  opencc_config: t2hk.json  # 繁 -> 香港
+  #  opencc_config: s2tw.json  # 簡 -> 臺灣標準
+  #  opencc_config: s2twp.json # 簡 -> 臺灣片語
+  tags: [ abc, number, gregorian_to_lunar ]  # 限制在对应 tag，不对其他如反查的内容做简繁转换
+ 
+lua_reverse_db:               # 拆分提示
+  spelling: 092wb_wb_spelling
+  code: 092wb_wb_spelling
+
+# Lua 配置: 日期、时间、星期、ISO 8601、时间戳的触发关键字
+092wb_date_translator:
+  date: date       # 日期： 2022-11-29
+  time: time       # 时间： 18:13
+  week: week       # 星期： 星期二
+#  datetime: dt   # ISO 8601： 2022-11-29T18:13:11+08:00
+#  timestamp: ts  # 时间戳： 1669716794
+
+# Lua 配置：农历的触发关键字
+092wb_lunar: nl  # 农历： 二〇二三年冬月二十 癸卯年（兔）冬月二十
+
+
+
+# Emoji
+# 来源：https://github.com/rime/rime-emoji
+emoji:
+  option_name: emoji
+  opencc_config: 092wb_emoji.json
+  inherit_comment: false  # 在 corrector.lua 及反查中，emoji 返回空注释
+
+
+repeat_last_input:    # 重复最后一次上屏
+  input: z
+  size: 1
+  initial_quality: 1
+
+punctuator:
+  import_preset: 092wb_symbols
+
+recognizer:
+  import_preset: default
+
+key_binder:
+  import_preset: default
+
+
+

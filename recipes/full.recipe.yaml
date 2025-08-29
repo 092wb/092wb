@@ -1,0 +1,25 @@
+# encoding: utf-8
+---
+recipe:
+  Rx: recipes/full
+  args:
+  description: >-
+    完整安装、更新
+install_files: >-
+  092wb.dict.yaml
+  092wb.schema.yaml
+  092wb_U.dict.yaml
+  092wb_key_bindings.yaml
+  092wb_core.dict.yaml
+  092wb_core.schema.yaml
+  default.yaml
+  092wb_punctuation.yaml
+  092wb_py.dict.yaml
+  092wb_py.schema.yaml
+  rime.lua
+  squirrel.yaml
+  092wb_symbols.yaml
+  092wb_wb_spelling.dict.yaml
+  092wb_wb_spelling.schema.yaml
+  opencc/*.*
+  lua/*.*
